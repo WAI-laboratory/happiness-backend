@@ -1,10 +1,9 @@
-# .github/workflows/deploy.yml
 name: Deploy to Vultr
 
 on:
   push:
     branches:
-      - main  # This triggers the workflow on pushes to the main branch
+      - main
 
 jobs:
   deploy:
@@ -19,8 +18,8 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.VULTR_SSH_PRIVATE_KEY }}
 
-    - name: Build Docker image
-      run: docker build -t happiness-backend .
+    - name: Verify SSH connection
+      run: ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "echo 'SSH connection successful'"
 
     - name: Push Docker image to Vultr
       run: |
