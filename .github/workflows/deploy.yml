@@ -31,18 +31,24 @@ jobs:
     - name: Deploy code to Vultr
       run: ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "cd /root/deploy/happiness-backend && git pull || git clone https://github.com/YOUR_REPO/happiness-backend.git /root/deploy/happiness-backend"
 
-    - name: Restart Docker container
+    - name: Build and run Docker container
       run: |
         ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "
+          # Build the image from the source code
+          docker build -t happiness-backend-image /root/deploy/happiness-backend;
+
+          # Stop the running container if it exists
           CONTAINER_ID=\$(docker ps -q -f name=happiness-backend);
           if [ ! -z \"\$CONTAINER_ID\" ]; then
             docker container stop \$CONTAINER_ID;
           fi;
 
+          # Remove the stopped container if it exists
           CONTAINER_ID=\$(docker ps -a -q -f name=happiness-backend);
           if [ ! -z \"\$CONTAINER_ID\" ]; then
             docker container rm \$CONTAINER_ID;
           fi;
 
-          docker container run -d -p 80:3010 --name happiness-backend /root/deploy/happiness-backend
+          # Run the newly built image
+          docker container run -d -p 80:3010 --name happiness-backend happiness-backend-image;
         "
