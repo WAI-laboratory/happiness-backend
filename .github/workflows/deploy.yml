@@ -29,10 +29,16 @@ jobs:
 
     # Git clone instead of SCP
     - name: Deploy code to Vultr
-      run: ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "cd /root/deploy/happiness-backend && git pull || git clone git@github.com:WAI-laboratory/happiness-backend.git /root/deploy/happiness-backend"
+      run: ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "cd /root/happiness-backend && git pull || git clone https://github.com/YOUR_REPO/happiness-backend.git /root/happiness-backend"
 
     - name: Restart Docker container
       run: |
-        ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "docker container stop happiness-backend || true"
-        ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "docker container rm happiness-backend || true"
-        ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "docker container run -d -p 80:3010 --name happiness-backend /root/deploy/happiness-backend"
+        ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "
+          if [ $(docker ps -q -f name=happiness-backend) ]; then
+            docker container stop happiness-backend;
+          fi;
+          if [ $(docker ps -a -q -f name=happiness-backend) ]; then
+            docker container rm happiness-backend;
+          fi;
+          docker container run -d -p 80:3010 --name happiness-backend /root/happiness-backend
+        "
