@@ -23,7 +23,7 @@ jobs:
 
     # Git clone instead of SCP
     - name: Deploy code to Vultr
-      run: ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "cd /root/deploy/happiness-backend && git pull || git clone https://github.com/YOUR_REPO/happiness-backend.git /root/deploy/happiness-backend"
+      run: ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "cd /root/deploy/happiness-backend && git pull || git clone git@github.com:WAI-laboratory/happiness-backend.git /root/deploy/happiness-backend"
 
     # Add a step to install dependencies and build the project
     - name: Install dependencies and build project
