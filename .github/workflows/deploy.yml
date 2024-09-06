@@ -1,0 +1,35 @@
+# .github/workflows/deploy.yml
+name: Deploy to Vultr
+
+on:
+  push:
+    branches:
+      - main  # This triggers the workflow on pushes to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.VULTR_SSH_PRIVATE_KEY }}
+
+    - name: Build Docker image
+      run: docker build -t happiness-backend .
+
+    - name: Push Docker image to Vultr
+      run: |
+        scp -o StrictHostKeyChecking=no ./Dockerfile root@${{ secrets.VULTR_IP }}:/root/happiness-backend/Dockerfile
+        scp -o StrictHostKeyChecking=no ./package*.json root@${{ secrets.VULTR_IP }}:/root/happiness-backend/
+        scp -o StrictHostKeyChecking=no ./dist root@${{ secrets.VULTR_IP }}:/root/happiness-backend/ -r
+
+    - name: Restart Docker container
+      run: |
+        ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "docker container stop happiness-backend || true"
+        ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "docker container rm happiness-backend || true"
+        ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "docker container run -d -p 80:3010 --name happiness-backend /root/happiness-backend"
