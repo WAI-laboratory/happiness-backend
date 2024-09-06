@@ -21,11 +21,15 @@ jobs:
     - name: Verify SSH connection
       run: ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "echo 'SSH connection successful'"
 
-    - name: Push Docker image to Vultr
+    # Add a step to install dependencies and build the project
+    - name: Install dependencies and build project
       run: |
-        scp -o StrictHostKeyChecking=no ./Dockerfile root@${{ secrets.VULTR_IP }}:/root/deploy/happiness-backend/Dockerfile
-        scp -o StrictHostKeyChecking=no ./package*.json root@${{ secrets.VULTR_IP }}:/root/deploy/happiness-backend/
-        scp -o StrictHostKeyChecking=no ./dist root@${{ secrets.VULTR_IP }}:/root/deploy/happiness-backend/ -r
+        npm install
+        npm run build
+
+    # Git clone instead of SCP
+    - name: Deploy code to Vultr
+      run: ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "cd /root/deploy/happiness-backend && git pull || git clone git@github.com:WAI-laboratory/happiness-backend.git /root/deploy/happiness-backend"
 
     - name: Restart Docker container
       run: |
