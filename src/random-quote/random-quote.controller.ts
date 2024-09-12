@@ -6,10 +6,12 @@ import { Quote } from './quote.entity';
 export class RandomQuoteController {
 
     constructor(private readonly randomQuoteService: RandomQuoteService) {}
-
     @Post()
-    create(@Body() quote: Partial<Quote>): Promise<Quote> {
-        return this.randomQuoteService.create(quote);
+    async create(@Body() quote: Partial<Quote>): Promise<Quote> {
+      if (!quote.content || !quote.author) {
+        throw new Error('Content and author are required.');
+      }
+      return this.randomQuoteService.create(quote);
     }
 
     @Get()
