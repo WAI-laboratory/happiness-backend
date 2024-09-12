@@ -11,7 +11,7 @@ import { Quote } from './random-quote/quote.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: '127.0.0.1',
+      host: 'host.docker.internal:127.0.0.1',
       port: 5432,
       username: 'postgres', // Replace with your PostgreSQL username
       password: 'wai123!', // Replace with your PostgreSQL password
