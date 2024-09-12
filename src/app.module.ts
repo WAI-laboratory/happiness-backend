@@ -21,7 +21,7 @@ import { Quote } from './random-quote/quote.entity';
     }),
     RandomQuoteModule
   ],
-  controllers: [AppController, RandomQuoteController],
-  providers: [AppService, RandomQuoteService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
