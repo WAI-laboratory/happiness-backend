@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpStatus } from '@nestjs/common';
 import { RandomQuoteService } from './random-quote.service';
 import { Quote } from './quote.entity';
 
@@ -6,22 +6,41 @@ import { Quote } from './quote.entity';
 export class RandomQuoteController {
 
     constructor(private readonly randomQuoteService: RandomQuoteService) {}
+
     @Post()
-    async create(@Body() quote: Partial<Quote>): Promise<Quote> {
-      if (!quote.content || !quote.author) {
-        throw new Error('Content and author are required.');
-      }
-      return this.randomQuoteService.create(quote);
+    async create(@Body() quote: Partial<Quote>): Promise<any> {
+        if (!quote.content || !quote.author) {
+            return {
+                message: 'Content and author are required.',
+                statusCode: HttpStatus.BAD_REQUEST,
+                data: null
+            };
+        }
+        const createdQuote = await this.randomQuoteService.create(quote);
+        return {
+            message: 'Quote created successfully',
+            statusCode: HttpStatus.CREATED,
+            data: createdQuote
+        };
     }
 
     @Get()
-    async getDailyQuote(): Promise<Quote> {
-        // Use the service to get the daily quote
-        return this.randomQuoteService.findDailyQuote();
+    async getDailyQuote(): Promise<any> {
+        const dailyQuote = await this.randomQuoteService.findDailyQuote();
+        return {
+            message: 'Quote fetched successfully',
+            statusCode: HttpStatus.OK,
+            data: dailyQuote
+        };
     }
-    
+
     @Get('all-quotes')
-    findAll(): Promise<Quote[]> {
-        return this.randomQuoteService.findAll();
+    async findAll(): Promise<any> {
+        const quotes = await this.randomQuoteService.findAll();
+        return {
+            message: 'All quotes fetched successfully',
+            statusCode: HttpStatus.OK,
+            data: quotes
+        };
     }
 }
