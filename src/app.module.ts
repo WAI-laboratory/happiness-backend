@@ -5,8 +5,7 @@ import { RandomQuoteController } from './random-quote/random-quote.controller';
 import { RandomQuoteService } from './random-quote/random-quote.service';
 import { RandomQuoteModule } from './random-quote/random-quote.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Quote } from './quote.entity'; // We'll create this entity below
-import { QuotesModule } from './quotes/quotes.module';
+import { Quote } from './random-quote/quote.entity';
 
 @Module({
   imports: [
@@ -15,7 +14,7 @@ import { QuotesModule } from './quotes/quotes.module';
       host: 'localhost',
       port: 5432,
       username: 'postgres', // Replace with your PostgreSQL username
-      password: 'your_password', // Replace with your PostgreSQL password
+      password: 'wai123!', // Replace with your PostgreSQL password
       database: 'happiness-quote', // Replace with your database name
       entities: [Quote],
       synchronize: true, // Only for development, set to false in production
