@@ -15,7 +15,7 @@ import { Quote } from './random-quote/quote.entity';
       port: 5432,
       username: 'postgres', // Replace with your PostgreSQL username
       password: 'wai123!', // Replace with your PostgreSQL password
-      database: 'happiness-quote', // Replace with your database name
+      database: 'happiness-postgres', // Replace with your database name
       entities: [Quote],
       synchronize: true, // Only for development, set to false in production
     }),
