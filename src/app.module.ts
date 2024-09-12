@@ -11,13 +11,13 @@ import { Quote } from './random-quote/quote.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'host.docker.internal',
+      host: '127.0.0.1',
       port: 5432,
       username: 'postgres', // Replace with your PostgreSQL username
       password: 'wai123!', // Replace with your PostgreSQL password
       database: 'happiness-postgres', // Replace with your database name
       entities: [Quote],
-      synchronize: true, // Only for development, set to false in production
+      synchronize: false,
     }),
     RandomQuoteModule
   ],
