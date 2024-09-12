@@ -50,5 +50,5 @@ jobs:
           fi;
 
           # Run the newly built image
-          docker container run -d -p 3010:3010 --name happiness-backend happiness-backend-image;
+          docker container run -d -p 3010:3010 --name happiness-backend --network app-network happiness-backend-image;
         "
