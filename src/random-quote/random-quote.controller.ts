@@ -15,6 +15,12 @@ export class RandomQuoteController {
     }
 
     @Get()
+    async getDailyQuote(): Promise<Quote> {
+        // Use the service to get the daily quote
+        return this.randomQuoteService.findDailyQuote();
+    }
+    
+    @Get('all-quotes')
     findAll(): Promise<Quote[]> {
         return this.randomQuoteService.findAll();
     }
