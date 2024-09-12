@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Quote } from './quote.entity';
 import { Repository } from 'typeorm';
@@ -15,13 +15,12 @@ export class RandomQuoteService {
         const newQuote = this.quotesRepository.create(quote);
         return this.quotesRepository.save(newQuote);
     }
-
     async findDailyQuote(): Promise<Quote> {
-        // Get the total number of quotes without fetching them all
+        // Get the total number of quotes without deleted ones
         const count = await this.quotesRepository.count();
 
         if (count === 0) {
-            throw new Error('No quotes found');
+            throw new NotFoundException('No quotes found');
         }
 
         // Calculate the day of the year (1-365/366)
@@ -31,13 +30,20 @@ export class RandomQuoteService {
         const oneDay = 1000 * 60 * 60 * 24;
         const dayOfYear = Math.floor(diff / oneDay);
 
-        // Select the quote based on the day of the year, using an offset query
+        // Use the day of the year modulo total count to calculate the index
         const quoteIndex = dayOfYear % count;
+
+        // Fetch a quote using the calculated index with OFFSET and LIMIT, excluding deleted quotes
         const quote = await this.quotesRepository
             .createQueryBuilder("quote")
-            .offset(quoteIndex)   // Skip to the correct quote
-            .limit(1)             // Only fetch one quote
+            .orderBy("quote.id", "ASC")  // Or use any other ordering mechanism
+            .offset(quoteIndex)  // Skip to the correct quote
+            .limit(1)            // Only fetch one quote
             .getOne();
+
+        if (!quote) {
+            throw new NotFoundException('Quote not found');
+        }
 
         return quote;
     }
@@ -45,4 +51,12 @@ export class RandomQuoteService {
     findAll(): Promise<Quote[]> {
         return this.quotesRepository.find();
       }
+
+          // New method to delete a quote by ID
+    async deleteQuoteById(id: number): Promise<void> {
+        const result = await this.quotesRepository.delete(id);
+        if (result.affected === 0) {
+            throw new NotFoundException(`Quote with ID ${id} not found`);
+        }
+    }
 }

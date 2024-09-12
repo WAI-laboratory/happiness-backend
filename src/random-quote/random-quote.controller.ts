@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpStatus, Delete, Param } from '@nestjs/common';
 import { RandomQuoteService } from './random-quote.service';
 import { Quote } from './quote.entity';
 
@@ -41,6 +41,16 @@ export class RandomQuoteController {
             message: 'All quotes fetched successfully',
             statusCode: HttpStatus.OK,
             data: quotes
+        };
+    }
+
+    @Delete(':id')
+    async deleteQuote(@Param('id') id: number): Promise<any> {
+        await this.randomQuoteService.deleteQuoteById(id);
+        return {
+            message: `Quote with ID ${id} deleted successfully`,
+            statusCode: HttpStatus.OK,
+            data: null
         };
     }
 }
