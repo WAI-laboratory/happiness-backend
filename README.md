@@ -4,7 +4,8 @@
 이 프로젝트는 한국어 행복 명언을 제공하는 API입니다. API를 통해 무작위로 행복 명언과 그에 대한 영어 번역을 얻을 수 있습니다.
 
 ## 기부
-<a href="buymeacoffee.com/sobabear" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+[!["Buy Me A Coffee"](https://cdn.buymeacoffee.com/buttons/default-yellow.png)](https://www.buymeacoffee.com/sobabear)
+
 
 
 ## 기능
