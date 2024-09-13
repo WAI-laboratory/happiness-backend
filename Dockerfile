@@ -4,5 +4,5 @@ WORKDIR /var/app/happiness-backend
 COPY . .
 RUN npm install
 RUN npm run build
-EXPOSE 3010
+EXPOSE 3011
 CMD [ "node", "dist/main.js" ]
