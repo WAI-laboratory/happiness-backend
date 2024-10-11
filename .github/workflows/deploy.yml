@@ -21,9 +21,15 @@ jobs:
     - name: Verify SSH connection
       run: ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "echo 'SSH connection successful'"
 
-    # Git clone instead of SCP
     - name: Deploy code to Vultr
-      run: ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "cd /root/deploy/happiness-backend && git pull || git clone git@github.com:WAI-laboratory/happiness-backend.git /root/deploy/happiness-backend"
+      run: |
+        ssh -o StrictHostKeyChecking=no root@${{ secrets.VULTR_IP }} "
+          if [ -d /root/deploy/happiness-backend ]; then
+            cd /root/deploy/happiness-backend && git pull;
+          else
+            git clone git@github.com:WAI-laboratory/happiness-backend.git /root/deploy/happiness-backend;
+          fi;
+        "
 
     # Add a step to install dependencies and build the project
     - name: Install dependencies and build project
